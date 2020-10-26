@@ -1,4 +1,4 @@
-# Scrapy settings for tiendascrapy project
+# Scrapy settings for storescraping project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'tiendascrapy'
+BOT_NAME = 'storescraping'
 
-SPIDER_MODULES = ['tiendascrapy.spiders']
-NEWSPIDER_MODULE = 'tiendascrapy.spiders'
+SPIDER_MODULES = ['storescraping.spiders']
+NEWSPIDER_MODULE = 'storescraping.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'tiendascrapy (+http://www.yourdomain.com)'
+#USER_AGENT = 'storescraping (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'tiendascrapy.middlewares.TiendascrapySpiderMiddleware': 543,
+#    'storescraping.middlewares.StorescrapingSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'tiendascrapy.middlewares.TiendascrapyDownloaderMiddleware': 543,
+#    'storescraping.middlewares.StorescrapingDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'tiendascrapy.pipelines.TiendascrapyPipeline': 300,
+#    'storescraping.pipelines.StorescrapingPipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
