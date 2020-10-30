@@ -1,10 +1,8 @@
 import scrapy
 import json
-import storescraping.config.constant
 from storescraping.config.config import URL_SCRAPPING
 from storescraping.sites.sites import sites
 from storescraping.utils.url_builder import url_builder, get_site_data
-from pprint import pprint as pp
 from storescraping.sites.parseador import Parseador
 
 
