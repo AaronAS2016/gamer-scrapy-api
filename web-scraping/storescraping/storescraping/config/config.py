@@ -1,0 +1,3 @@
+URL_SCRAPPING = [
+    "steam"
+]
