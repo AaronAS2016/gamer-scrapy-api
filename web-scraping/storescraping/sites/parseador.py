@@ -2,7 +2,6 @@ import scrapy
 import storescraping.config.constant as constans
 
 
-
 class Parseador:
 
     def parsear_elements(self, query, response, site_data):
@@ -19,7 +18,7 @@ class Parseador:
     def __parsear_elements_pagination(self, query, response, site_data):
         return 0
 
-    #TODO: solo trae la primera tanda, no sigue analizando si hay mas valores
+    # TODO: solo trae la primera tanda, no sigue analizando si hay mas valores
     def __parsear_elements_infinite_scroll(self, query, response, site_data):
         selector_elements = site_data["parse_elements"]
         selector_items = selector_elements["items"]
