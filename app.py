@@ -5,6 +5,8 @@ from flask import Flask, request, jsonify
 from scrapy import signals
 from scrapy.crawler import CrawlerRunner
 from scrapy.signalmanager import dispatcher
+from config.config import SITES_TO_SEARCH
+from config.sites import CONFIG_SITE
 import time
 
 from storescraping.spiders.store import StoreSpider
@@ -27,7 +29,7 @@ def scrape_with_crochet(modo, query):
 
     dispatcher.connect(_crawler_result, signal=signals.item_scraped)
 
-    eventual = crawl_runner.crawl(StoreSpider, modo=modo, query=query)
+    eventual = crawl_runner.crawl(StoreSpider, modo=modo, query=query, config=CONFIG_SITE, sites_to_search=SITES_TO_SEARCH)
 
     return eventual
 
