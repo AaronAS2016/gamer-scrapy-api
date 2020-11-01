@@ -27,18 +27,16 @@ class Parseador:
         selector_price = selector_elements["price"]
         selector_img = selector_elements["img_url"]
 
-        informacion_recolectada = []
 
         items = self.__obtener_elemento(selector_items, response)
 
         for item in items:
-            informacion_recolectada.append({
+           yield {
                 "title": self.__obtener_elemento(selector_title, item).get(),
                 "price": self.__obtener_elemento(selector_price, item).get().strip(),
                 "img": self.__obtener_elemento(selector_img, item).get()
-            })
+            }
 
-        return informacion_recolectada
 
     def __obtener_elemento(self, selector, response):
         tipo_de_selector = selector["type"]

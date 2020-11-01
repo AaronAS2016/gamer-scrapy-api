@@ -10,4 +10,6 @@ class TestSpider(scrapy.Spider):
     def parse(self, response):
         text = response.xpath(
             "/html/body/div[3]/div[3]/div[5]/div[1]/p[1]").get()
-        print(text)
+        yield {
+            "comandante": text
+        }

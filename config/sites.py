@@ -1,9 +1,7 @@
-sites = {
-    "steam": {
+CONFIG_SITE = {
+    "steampowered": {
         "nice_name": "Steam",
-        "url_base": "https://store.steampowered.com",
-        "anti_scrapping": True,
-        "uri_search": "/search/?term=[QUERY]",
+        "url_search": "https://store.steampowered.com/search/?term=[QUERY]&category1=998",
         "parse_elements": {
             "items": {
                 "type": "xpath",

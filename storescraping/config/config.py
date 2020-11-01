@@ -1,3 +1,0 @@
-URL_SCRAPPING = [
-    "steam"
-]
