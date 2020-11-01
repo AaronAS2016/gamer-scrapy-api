@@ -3,6 +3,9 @@ def url_builder(site, sites_data, query_busqueda):
     url_busqueda =  site_data["url_search"].replace("[QUERY]", query_busqueda)
     return url_busqueda
 
+def url_search_build(query, url_search):
+    return url_search.replace("[QUERY]", query)
+
 def get_name_store(url):
     return url.split(".")[1]
 
