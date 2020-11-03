@@ -22,7 +22,7 @@ CONFIG_SITE = {
         },
         "type": "infinite_scroll"
     },
-    "epic": {
+    "epicgames": {
         "nice_name": "Epic Store",
         "url_base": "https://www.epicgames.com",
         "uri_search": "/store/es-ES/browse?pageSize=30&q=[QUERY]&sortBy=relevance&sortDir=DESC",
