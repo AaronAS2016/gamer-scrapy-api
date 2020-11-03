@@ -12,7 +12,6 @@ class SteamSpider(scrapy.Spider, Validador):
     selector_discount = ".search_price.discounted::text"
     selector_title = ".//span[@class='title']/text()"
     selector_img = ".//img/@src"
-    MAX_RESULTS = 20
 
     def __init__(self, query, modo, url_search, *args, **kwargs):
         super(SteamSpider, self).__init__(*args, **kwargs)
