@@ -9,7 +9,7 @@ class TestSpider(scrapy.Spider):
 
     def parse(self, response):
         text = response.xpath(
-            "/html/body/div[3]/div[3]/div[5]/div[1]/p[1]").get()
+            "//h1[@id='firstHeading']/text()").get()
         yield {
             "comandante": text
         }
