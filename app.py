@@ -19,21 +19,32 @@ def index(request):
 
 
 @app.route('/search/<string:modo>/<string:query>')
-def get_quotes(request, modo, query):
+async def get_quotes(request, modo, query):
     request.setHeader('Access-Control-Allow-Origin', '*')
     request.setHeader('Access-Control-Allow-Methods', 'GET')
     request.setHeader('Access-Control-Allow-Headers', 'x-prototype-version,x-requested-with')
     request.setHeader('Access-Control-Max-Age', "2520")
     
     runner = SpiderRunner()
+    output_data = {}
 
-    deferred = runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE["steampowered"]["url_search"])
-    deferred.addCallback(return_spider_output)
 
-    return deferred
-
-def return_spider_output(output):
     _encoder = ScrapyJSONEncoder(ensure_ascii=False)
-    return _encoder.encode(output)
+    for site in SITES_TO_SEARCH:
+        if site == "steampowered":
+            results = await runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE["steampowered"]["url_search"])
+        else:
+            results = await runner.crawl(TestSpider)
+        output = return_spider_output(results, output_data, site )
+        output_data = output
+        
+
+
+    return _encoder.encode(output_data)
+
+def return_spider_output(output, output_data, site):
+    output_data[site] = output
+    return output_data
+
 
 app.run("localhost", 8080)

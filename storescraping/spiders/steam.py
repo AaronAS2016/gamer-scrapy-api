@@ -22,10 +22,10 @@ class SteamSpider(scrapy.Spider, Validador):
 
     def parse(self, response):
         items = response.xpath(self.selector_items)
-
+        
         for item in items:
-            title = item.xpath(self.selector_title).get()
-            price = item.css(self.selector_price).get().strip()
+            title: str = item.xpath(self.selector_title).get()
+            price: int = item.css(self.selector_price).get().strip()
 
             if self.modo(self.query, title.lower()):
                 self.contador += 1
