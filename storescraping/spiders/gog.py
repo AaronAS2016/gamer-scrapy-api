@@ -1,4 +1,5 @@
 import scrapy
+import json
 
 from storescraping.utils.url_builder import url_search_build
 from storescraping.sites.modes import Validador
@@ -15,7 +16,13 @@ class GOGSpider(scrapy.Spider, Validador):
         self.modo = self.obtener_modo(modo)
 
     def parse(self, response):
-        
-        yield {
-            "title" : "Completar spider"
-        }
+        items = json.loads(response.body)["products"]
+        for item in items:
+            title = item["title"]
+            price = item["price"]["amount"]
+            if self.modo(self.query, title.lower()):
+                yield {
+                    "title" : title,
+                    "price" : price,
+                    "provider": self.name
+                }
