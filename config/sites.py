@@ -13,6 +13,10 @@ CONFIG_SITE = {
     },
     "gog": {
         "nice_name" : "GOG",
-        "url_search": "https://www.gog.com/games/ajax/filtered?mediaType=game&page=1&search=[QUERY]&sort=popularity"
+        "url_search": "https://www.gog.com/games/ajax/filtered?mediaType=game&page=[PAGE]&search=[QUERY]&sort=popularity"
+    },
+    "nuuvem": {
+        "nice_name" : "nuuvem",
+        "url_search" : "https://www.nuuvem.com/catalog/search/[QUERY]"
     }
 }
