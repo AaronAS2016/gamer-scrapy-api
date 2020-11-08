@@ -6,6 +6,7 @@ from config.sites import CONFIG_SITE
 
 from storescraping.spiders.steam import SteamSpider
 from storescraping.spiders.store import StoreSpider
+from storescraping.spiders.nuuvem import NuuvemSpider
 from storescraping.spiders.test import TestSpider
 
 
@@ -27,13 +28,15 @@ async def get_quotes(request, modo, query):
     request.setHeader('Access-Control-Max-Age', "2520")
     
     runner = SpiderRunner()
-    output_data = {}
+    output_data = []
 
 
     _encoder = ScrapyJSONEncoder(ensure_ascii=False)
     for site in SITES_TO_SEARCH:
         if site == "steampowered":
-            results = await runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE["steampowered"]["url_search"])
+            results = await runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
+        elif site == "nuuvem":
+            results = await runner.crawl(NuuvemSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
         elif site == "gog":
             pass
             #results = await runner.crawl("completar")
@@ -47,7 +50,7 @@ async def get_quotes(request, modo, query):
     return _encoder.encode(output_data)
 
 def return_spider_output(output, output_data, site):
-    output_data[site] = output
+    output_data = output_data + output
     return output_data
 
 
