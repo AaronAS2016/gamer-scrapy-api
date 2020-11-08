@@ -17,6 +17,6 @@ CONFIG_SITE = {
     },
     "nuuvem": {
         "nice_name" : "nuuvem",
-        "url_search" : "https://www.nuuvem.com/catalog/search/[QUERY]"
+        "url_search" : "https://www.nuuvem.com/catalog/page/[PAGE]/search/[QUERY]"
     }
 }
