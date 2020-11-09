@@ -29,9 +29,10 @@ class GOGSpider(scrapy.Spider, Validador):
                     yield {
                         "title" : title,
                         "price" : price,
-                        "provider": self.name
+                        "provider": self.name,
+                        "page": self.page
                     }
 
             self.page = self.page + 1
-            self.finalurl = self.baseurl.replace("[PAGE]", self.page)
-            Request(url=self.finalurl, callback=self.parse)
+            self.finalurl = self.baseurl.replace("[PAGE]", str(self.page))
+            yield Request(url=self.finalurl, callback=self.parse)

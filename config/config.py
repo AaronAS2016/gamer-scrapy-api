@@ -1,4 +1,5 @@
 SITES_TO_SEARCH = [
     "steampowered",
-    "nuuvem"
+    "nuuvem",
+    "gog",
 ]
