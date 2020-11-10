@@ -34,8 +34,10 @@ class SteamSpider(scrapy.Spider, Validador):
                             1].strip()
                     except IndexError:
                         price = SIN_PRECIO
-                yield {
-                    "title": title,
-                    "price": price,
-                    "provider": self.name
-                }
+                    
+                if price != SIN_PRECIO:
+                    yield {
+                        "title": title,
+                        "price": price,
+                        "provider": self.name
+                    }

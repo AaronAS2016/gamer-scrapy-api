@@ -42,11 +42,13 @@ class NuuvemSpider(scrapy.Spider, Validador):
 
             if self.modo(self.query, title.lower()):
                 price = SIN_PRECIO if price == "No disponible" else price_original
-                yield {
-                    "title": title,
-                    "price": price,
-                    "provider": self.name
-                }
+
+                if price != SIN_PRECIO:
+                    yield {
+                        "title": title,
+                        "price": price,
+                        "provider": self.name
+                    }
 
         if len(response.css(".btn-show-more")) > 0:
             self.page += 1
