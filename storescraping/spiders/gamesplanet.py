@@ -26,14 +26,14 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
             for item in items:
                 title: str = item.xpath(self.selector_title).get()
                 price: int = item.xpath(self.selector_price).get()
-                page: str = "https://us.gamesplanet.com" + item.css(self.selector_href).get()
+                href: str = "https://us.gamesplanet.com" + item.css(self.selector_href).get()
 
                 if self.modo(self.query, title.lower()):
                     yield {
                         "title": title,
                         "price": price,
                         "provider": self.name,
-                        "page": page
+                        "href": href
                     }
             if response.css(self.selector_forward).get():
                 yield response.follow(response.css(self.selector_forward).get(), callback = self.parse)
