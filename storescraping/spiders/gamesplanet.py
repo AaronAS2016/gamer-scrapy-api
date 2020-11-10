@@ -11,7 +11,7 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
     selector_price = ".//span[@class='price_current']/text()"
     selector_title = ".//a[@class='d-block text-decoration-none stretched-link']/text()"
     selector_forward = ".next-page::attr(href)"
-    #selector_href = ".d-block.text-decoration-none.stretched-link::attr(href)"
+    selector_href = ".d-block.text-decoration-none.stretched-link::attr(href)"
 
     def __init__(self, query, modo, url_search, *args, **kwargs):
         super(GamesPlantetSpider, self).__init__(*args, **kwargs)
@@ -26,14 +26,14 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
             for item in items:
                 title: str = item.xpath(self.selector_title).get()
                 price: int = item.xpath(self.selector_price).get()
+                page: str = "https://us.gamesplanet.com" + item.css(self.selector_href).get()
 
-                #if self.modo(self.query, title.lower()):
-                yield {
-                    "title": title,
-                    "price": price,
-                    #"provider": self.name,
-                    #"page": "https://us.gamesplanet.com/" + response.css(self.selector_href).get()
-                    "debug": response.css(self.selector_forward).get()
-                }
+                if self.modo(self.query, title.lower()):
+                    yield {
+                        "title": title,
+                        "price": price,
+                        "provider": self.name,
+                        "page": page
+                    }
             if response.css(self.selector_forward).get():
                 yield response.follow(response.css(self.selector_forward).get(), callback = self.parse)
