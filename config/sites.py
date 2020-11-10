@@ -18,5 +18,10 @@ CONFIG_SITE = {
     "nuuvem": {
         "nice_name" : "nuuvem",
         "url_search" : "https://www.nuuvem.com/catalog/page/[PAGE]/search/[QUERY]"
+    },
+    "gamesplanet":{
+        "nice_name": "Games Plantet",
+        "url_search": "https://us.gamesplanet.com/search?query=[QUERY]"
+        #https://us.gamesplanet.com/search?page=2&query=metro
     }
 }
