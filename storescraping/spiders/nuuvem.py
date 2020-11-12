@@ -53,7 +53,7 @@ class NuuvemSpider(scrapy.Spider, Validador):
                 if price != SIN_PRECIO:
                     yield {
                         "title": title,
-                        "price": price,
+                        "price": float(price),
                         "provider": self.name,
                         "category": category,
                         "url": link
