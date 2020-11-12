@@ -26,12 +26,14 @@ class GOGSpider(scrapy.Spider, Validador):
                 title = item["title"]
                 price = item["price"]["amount"]
                 category = item["category"]
+                url = item["url"]
                 if self.modo(self.query, title.lower()):
                     yield {
                         "title" : title,
                         "price" : price,
                         "category" : category,
                         "provider": self.name,
+                        "url" : "https://www.gog.com" + url,
                         "page": self.page
                     }
 
