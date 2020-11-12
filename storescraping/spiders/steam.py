@@ -29,7 +29,7 @@ class SteamSpider(scrapy.Spider, Validador):
         if self.modo(self.query, title.lower()):
             yield {
                 "title": title,
-                "price": price,
+                "price": round(float(str(price).replace("ARS$ ","").replace(".", "").replace(",", "."))*0.013, 2),
                 "provider": self.name,
                 "category": category,
                 "url": response.url
