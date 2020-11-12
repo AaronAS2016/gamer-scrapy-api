@@ -12,6 +12,7 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
     selector_title = ".//a[@class='d-block text-decoration-none stretched-link']/text()"
     selector_forward = ".next-page::attr(href)"
     selector_href = ".d-block.text-decoration-none.stretched-link::attr(href)"
+    selector_category = ".//span[@class='d-none d-sm-inline-block']/a/text()"
 
     def __init__(self, query, modo, url_search, *args, **kwargs):
         super(GamesPlantetSpider, self).__init__(*args, **kwargs)
@@ -27,13 +28,15 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
                 title: str = item.xpath(self.selector_title).get()
                 price: int = item.xpath(self.selector_price).get()
                 href: str = "https://us.gamesplanet.com" + item.css(self.selector_href).get()
+                category: str = item.xpath(self.selector_category).get()
 
                 if self.modo(self.query, title.lower()):
                     yield {
                         "title": title,
                         "price": price,
                         "provider": self.name,
-                        "href": href
+                        "href": href,
+                        "category": category
                     }
             if response.css(self.selector_forward).get():
                 yield response.follow(response.css(self.selector_forward).get(), callback = self.parse)
