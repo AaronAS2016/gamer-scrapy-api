@@ -31,10 +31,9 @@ class GOGSpider(scrapy.Spider, Validador):
                     yield {
                         "title" : title,
                         "price" : price,
-                        "category" : category,
                         "provider": self.name,
+                        "category" : category,
                         "url" : "https://www.gog.com" + url,
-                        "page": self.page
                     }
 
             self.page = self.page + 1
