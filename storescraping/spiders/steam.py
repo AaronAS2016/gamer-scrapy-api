@@ -36,6 +36,6 @@ class SteamSpider(scrapy.Spider, Validador):
                         price = SIN_PRECIO
                 yield {
                     "title": title,
-                    "price": price,
+                    "price": round(float(str(price).replace("ARS$ ","").replace(".", "").replace(",", "."))*0.013, 2),
                     "provider": self.name
                 }
