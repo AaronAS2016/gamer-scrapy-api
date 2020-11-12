@@ -33,7 +33,7 @@ async def get_quotes(request, modo, query):
     output_data = []
 
 
-    _encoder = ScrapyJSONEncoder(ensure_ascii=False)
+    _encoder = ScrapyJSONEncoder(ensure_ascii=True)
     for site in SITES_TO_SEARCH:
         if site == "steampowered":
             results = await runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
