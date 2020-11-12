@@ -14,6 +14,7 @@ class NuuvemSpider(scrapy.Spider, Validador):
     selector_real_price = ".product-btn-add-to-cart--container::attr(data-track-product-price)"
     selector_title = ".product-title::text"
     selector_category = ".product-btn-add-to-cart--container::attr(data-track-product-genre)"
+    selector_link = ".product-card--wrapper::attr(href)"
 
 
     def __init__(self, query, modo, url_search, *args, **kwargs):
@@ -44,6 +45,8 @@ class NuuvemSpider(scrapy.Spider, Validador):
 
             category = item.css(self.selector_category).get()
 
+            link = item.css(self.selector_link).get()
+
             if self.modo(self.query, title.lower()):
                 price = SIN_PRECIO if price == "No disponible" else price_original
 
@@ -52,7 +55,8 @@ class NuuvemSpider(scrapy.Spider, Validador):
                         "title": title,
                         "price": price,
                         "provider": self.name,
-                        "category": category
+                        "category": category,
+                        "url": link
                     }
 
         if len(response.css(".btn-show-more")) > 0:
