@@ -25,10 +25,12 @@ class GOGSpider(scrapy.Spider, Validador):
             for item in items:
                 title = item["title"]
                 price = item["price"]["amount"]
+                category = item["category"]
                 if self.modo(self.query, title.lower()):
                     yield {
                         "title" : title,
                         "price" : price,
+                        "category" : category,
                         "provider": self.name,
                         "page": self.page
                     }
