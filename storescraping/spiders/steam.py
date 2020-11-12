@@ -31,8 +31,8 @@ class SteamSpider(scrapy.Spider, Validador):
                 "title": title,
                 "price": price,
                 "provider": self.name,
-                "link": response.url,
-                "category": category
+                "category": category,
+                "url": response.url
             }
 
     def parse(self, response):

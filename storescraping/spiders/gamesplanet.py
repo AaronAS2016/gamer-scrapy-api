@@ -35,8 +35,8 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
                         "title": title,
                         "price": price,
                         "provider": self.name,
-                        "href": href,
-                        "category": category
+                        "category": category,
+                        "url": href
                     }
             if response.css(self.selector_forward).get():
                 yield response.follow(response.css(self.selector_forward).get(), callback = self.parse)

@@ -6,10 +6,8 @@ from config.sites import CONFIG_SITE
 
 from storescraping.spiders.steam import SteamSpider
 from storescraping.spiders.gog import GOGSpider
-from storescraping.spiders.store import StoreSpider
 from storescraping.spiders.nuuvem import NuuvemSpider
 from storescraping.spiders.gamesplanet import GamesPlantetSpider
-from storescraping.spiders.test import TestSpider
 
 
 from klein import Klein
@@ -43,8 +41,6 @@ async def get_quotes(request, modo, query):
             results = await runner.crawl(GOGSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
         elif site == "gamesplanet":
             results = await runner.crawl(GamesPlantetSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
-        else:
-            results = await runner.crawl(TestSpider)
         output = return_spider_output(results, output_data, site )
         output_data = output
 
