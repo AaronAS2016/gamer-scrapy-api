@@ -19,8 +19,8 @@ def index(request):
     return "Good morning sunshine, soon there will be lunch!"
 
 
-@app.route('/search/<string:modo>/<string:query>')
-async def get_quotes(request, modo, query):
+@app.route('/search/<string:modo>/<string:orden>/<string:query>')
+async def get_quotes(request, modo, orden, query):
     # CORS
     request.setHeader('Access-Control-Allow-Origin', '*')
     request.setHeader('Access-Control-Allow-Methods', 'GET')
@@ -44,7 +44,7 @@ async def get_quotes(request, modo, query):
         output = return_spider_output(results, output_data, site )
         output_data = output
 
-
+    _sortData(output_data, orden)
 
     return _encoder.encode(output_data)
 
@@ -52,5 +52,12 @@ def return_spider_output(output, output_data, site):
     output_data = output_data + output
     return output_data
 
+def _sortData(self, datos, orden):
+    if orden == "nombre":
+        sorted(datos, key=lambda x: x["title"])
+    elif orden == "pagina":
+        sorted(datos, key=lambda x: x["provider"])
+    elif orden == "precio":
+        sorted(datos, key=lambda x: x["price"])
 
 app.run("localhost", 8080)
