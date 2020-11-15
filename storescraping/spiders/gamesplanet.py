@@ -36,7 +36,7 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
                     price = float(original_price.replace("$", ""))
                     yield {
                         "title": title,
-                        "price": float(price.replace("$","")),
+                        "price": price,
                         "provider": self.name,
                         "category": category,
                         "url": href
