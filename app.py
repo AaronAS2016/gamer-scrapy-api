@@ -24,15 +24,26 @@ async def get_quotes(request, modo, orden, query):
     # CORS
     request.setHeader('Access-Control-Allow-Origin', '*')
     request.setHeader('Access-Control-Allow-Methods', 'GET')
-    request.setHeader('Access-Control-Allow-Headers', 'x-prototype-version,x-requested-with')
+    request.setHeader('Access-Control-Allow-Headers',
+                      'x-prototype-version,x-requested-with')
     request.setHeader('Access-Control-Max-Age', "2520")
 
     runner = SpiderRunner()
     output_data = []
+    filtros = None
+    sitios_a_buscar = SITES_TO_SEARCH
 
+    if b"filtro" in request.args:
+        filtros = [filtro.decode("utf-8")
+                   for filtro in request.args[b"filtro"]]
+
+
+    if filtros is not None:
+        sitios_a_buscar = [
+            sitio for sitio in sitios_a_buscar if sitio not in filtros]
 
     _encoder = ScrapyJSONEncoder(ensure_ascii=True)
-    for site in SITES_TO_SEARCH:
+    for site in sitios_a_buscar:
         if site == "steampowered":
             results = await runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
         elif site == "nuuvem":
@@ -41,26 +52,32 @@ async def get_quotes(request, modo, orden, query):
             results = await runner.crawl(GOGSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
         elif site == "gamesplanet":
             results = await runner.crawl(GamesPlantetSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
-        output = return_spider_output(results, output_data, site )
+        output = return_spider_output(results, output_data, site)
         output_data = output
     tipo_orden, indice_orden = orden.split("_")
     output_data = _sortData(output_data, tipo_orden, indice_orden)
 
     return _encoder.encode(output_data)
 
+
 def return_spider_output(output, output_data, site):
     output_data = output_data + output
     return output_data
 
+
 def _sortData(datos, tipo, indice):
     ordenada = []
-    aplicar_orden = indice=="desc"
+    aplicar_orden = indice == "desc"
     if tipo == "nombre":
-        ordenada = sorted(datos, key=lambda x: x["title"], reverse=aplicar_orden)
+        ordenada = sorted(
+            datos, key=lambda x: x["title"], reverse=aplicar_orden)
     elif tipo == "pagina":
-        ordenada = sorted(datos, key=lambda x: x["provider"], reverse=aplicar_orden)
+        ordenada = sorted(
+            datos, key=lambda x: x["provider"], reverse=aplicar_orden)
     elif tipo == "precio":
-        ordenada = sorted(datos, key=lambda x: x["price"], reverse=aplicar_orden)
+        ordenada = sorted(
+            datos, key=lambda x: x["price"], reverse=aplicar_orden)
     return ordenada
+
 
 app.run("localhost", 8080)
