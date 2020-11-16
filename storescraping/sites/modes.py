@@ -11,6 +11,7 @@ class Validador:
         elif modo == BUSQUEDA_QUE_CONTENTA_TODAS_PALABRAS:
             return self.__modo_todas_palabras
 
+    #estricto* o exacto*
     def __modo_escricto(self, query, title):
         return query == title
 
