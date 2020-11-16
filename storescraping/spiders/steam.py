@@ -12,7 +12,9 @@ class SteamSpider(scrapy.Spider, Validador):
 
     selector_items = "//div[@id='search_resultsRows']/a"
     selector_price = ".game_purchase_price::text"
+    selector_price_discount = ".discount_final_price::text"
     selector_title = ".//div[@class='apphub_AppName']/text()"
+    selector_title_header = ".pageheader::text"
 
     def __init__(self, query, modo, url_search, *args, **kwargs):
         super(SteamSpider, self).__init__(*args, **kwargs)
@@ -22,28 +24,37 @@ class SteamSpider(scrapy.Spider, Validador):
         self.modo = self.obtener_modo(modo)
 
     def dolarizar_pesos(self, precio_pesos):
-        requester = requests.get("https://www.dolarsi.com/api/api.php?type=valoresprincipales")
+        requester = requests.get(
+            "https://www.dolarsi.com/api/api.php?type=valoresprincipales")
         data = requester.json()
         valor_oficial = float(data[0]['casa']['venta'].replace(",", "."))
         return round(precio_pesos/valor_oficial, 2)
 
-    
-
     def parse_product(self, response):
-        category = re.sub(r'[\r|\n|\t]', '', str(response.css("a.app_tag::text")[0].get()))
+        categories = response.css("a.app_tag::text").get()
+        category = re.sub(r'[\r|\n|\t]', '', str(
+            categories[0])) if categories is not None else "Sin Categoria"
         title = response.xpath(self.selector_title).get()
-        price = re.sub(r'[\r|\n|\t]', '', str(response.css(self.selector_price).get()))
+        if title is None:
+            title = response.css(self.selector_title_header).get()
+        price = str(response.css(self.selector_price).get())
+        if price == "None": #Si es None puede ser que es un producto con descuento/ o tipo pack , o que no salio a la venta
+            price = str(response.css(self.selector_price_discount).get())
+        price = re.sub(r'[\r|\n|\t]', '', price)
 
-        if self.modo(self.query, title.lower()):
-            
-            if "ARS" in price:
-                price = float(price.replace("ARS$ ","").replace(".", "").replace(",", "."))
+        if self.modo(self.query, title.lower()) and price != "None": #Si es None significa que es algo que no salio a la venta
+
+            if "Free" in price:
+                price = float(0)
+
+            elif "ARS" in price:
+                price = float(price.replace("ARS$ ", "").replace(
+                    ".", "").replace(",", "."))
                 price = self.dolarizar_pesos(price)
-            
+
             yield {
                 "title": title,
-                #"price": round(float(str(price).replace("ARS$ ","").replace(".", "").replace(",", "."))*0.013, 2),
-                "price": price,
+                "price": float(price),
                 "provider": self.name,
                 "category": category,
                 "url": response.url
@@ -54,5 +65,4 @@ class SteamSpider(scrapy.Spider, Validador):
 
         for item in items:
             link = item.xpath("./@href").get()
-            yield response.follow(link, callback=self.parse_product, cookies={'lastagecheckage': '1-0-1931', 'birthtime' : "-539125199"})
-        
+            yield response.follow(link, callback=self.parse_product, cookies={'lastagecheckage': '1-0-1931', 'birthtime': "-539125199"})
