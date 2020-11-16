@@ -27,7 +27,7 @@ class SteamSpider(scrapy.Spider, Validador):
         valor_oficial = float(data[0]['casa']['venta'].replace(",", "."))
         return round(precio_pesos/valor_oficial, 2)
 
-    
+
 
     def parse_product(self, response):
         category = re.sub(r'[\r|\n|\t]', '', str(response.css("a.app_tag::text")[0].get()))
@@ -35,15 +35,15 @@ class SteamSpider(scrapy.Spider, Validador):
         price = re.sub(r'[\r|\n|\t]', '', str(response.css(self.selector_price).get()))
 
         if self.modo(self.query, title.lower()):
-            
+
             if "ARS" in price:
                 price = float(price.replace("ARS$ ","").replace(".", "").replace(",", "."))
                 price = self.dolarizar_pesos(price)
-            
+
             yield {
                 "title": title,
                 #"price": round(float(str(price).replace("ARS$ ","").replace(".", "").replace(",", "."))*0.013, 2),
-                "price": price,
+                "price": float(price),
                 "provider": self.name,
                 "category": category,
                 "url": response.url
@@ -55,4 +55,3 @@ class SteamSpider(scrapy.Spider, Validador):
         for item in items:
             link = item.xpath("./@href").get()
             yield response.follow(link, callback=self.parse_product, cookies={'lastagecheckage': '1-0-1931', 'birthtime' : "-539125199"})
-        
