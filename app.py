@@ -31,12 +31,15 @@ async def get_quotes(request, modo, orden, query):
     runner = SpiderRunner()
     output_data = []
     filtros = None
+    rango_minimo, rango_maximo = 0, -1
     sitios_a_buscar = SITES_TO_SEARCH
 
     if b"filtro" in request.args:
         filtros = [filtro.decode("utf-8")
                    for filtro in request.args[b"filtro"]]
 
+    if b"rango" in request.args:
+        rango_minimo, rango_maximo = request.args[b"rango"]
 
     if filtros is not None:
         sitios_a_buscar = [
@@ -45,13 +48,13 @@ async def get_quotes(request, modo, orden, query):
     _encoder = ScrapyJSONEncoder(ensure_ascii=True)
     for site in sitios_a_buscar:
         if site == "steampowered":
-            results = await runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
+            results = await runner.crawl(SteamSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"], rango=(rango_minimo, rango_maximo))
         elif site == "nuuvem":
-            results = await runner.crawl(NuuvemSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
+            results = await runner.crawl(NuuvemSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"], rango=(rango_minimo, rango_maximo))
         elif site == "gog":
-            results = await runner.crawl(GOGSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
+            results = await runner.crawl(GOGSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"], rango=(rango_minimo, rango_maximo))
         elif site == "gamesplanet":
-            results = await runner.crawl(GamesPlantetSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"])
+            results = await runner.crawl(GamesPlantetSpider, modo=modo, query=query, url_search=CONFIG_SITE[site]["url_search"], rango=(rango_minimo, rango_maximo))
         output = return_spider_output(results, output_data, site)
         output_data = output
     tipo_orden, indice_orden = orden.split("_")
