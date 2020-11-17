@@ -3,11 +3,11 @@ from scrapy import Request
 import json
 
 from storescraping.utils.url_builder import url_search_build
-from storescraping.sites.modes import Validador
+from storescraping.sites.spider_site import SpiderSites
 from storescraping.config.constant import SIN_PRECIO
 
 
-class NuuvemSpider(scrapy.Spider, Validador):
+class NuuvemSpider(scrapy.Spider, SpiderSites):
     name = "nuuvem"
     selector_items = ".product-card--grid"
     selector_price = ".product-price--val::text"
@@ -17,15 +17,15 @@ class NuuvemSpider(scrapy.Spider, Validador):
     selector_link = ".product-card--wrapper::attr(href)"
 
 
-    def __init__(self, query, modo, url_search, *args, **kwargs):
+    def __init__(self, query, modo, url_search, rango, *args, **kwargs):
         super(NuuvemSpider, self).__init__(*args, **kwargs)
         self.page = 1
         self.base_url = url_search_build(query, url_search)
         self.final_url = self.base_url.replace("[PAGE]", str(self.page))
         self.start_urls = [self.final_url]
-        self.contador = 0
         self.query = query
-        self.modo = self.obtener_modo(modo)
+        self.rango = rango
+        self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
 
     def start_requests(self):
         for url in self.start_urls:
@@ -47,10 +47,9 @@ class NuuvemSpider(scrapy.Spider, Validador):
 
             link = item.css(self.selector_link).get()
 
-            if self.modo(self.query, title.lower()):
-                price = SIN_PRECIO if price == "No disponible" else price_original
+            price = SIN_PRECIO if price == "No disponible" else price_original
 
-                if price != SIN_PRECIO:
+            if self.es_valido_el_resultado(self.query, title.lower()) and self.esta_en_rango_de_precio(self.rango, price):
                     yield {
                         "title": title,
                         "price": float(price),
