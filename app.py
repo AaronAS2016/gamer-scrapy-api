@@ -63,7 +63,11 @@ async def get_quotes(request, modo, orden, query):
         output = return_spider_output(results, output_data, site)
         output_data = output
     if orden != "default":
-        tipo_orden, indice_orden = orden.split("_")
+        if orden != "relevancia":
+            tipo_orden, indice_orden = orden.split("_")
+        else: 
+            tipo_orden = orden
+            indice_orden = ""
         output_data = sort_data(output_data, tipo_orden, indice_orden, query)
 
     return _encoder.encode(output_data)
