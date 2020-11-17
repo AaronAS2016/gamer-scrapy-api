@@ -14,12 +14,13 @@ class GamesPlantetSpider(scrapy.Spider, SpiderSites):
     selector_href = ".d-block.text-decoration-none.stretched-link::attr(href)"
     selector_category = ".//span[@class='d-none d-sm-inline-block']/a/text()"
 
-    def __init__(self, query, modo, url_search, *args, **kwargs):
+    def __init__(self, query, modo, url_search, rango, *args, **kwargs):
         super(GamesPlantetSpider, self).__init__(*args, **kwargs)
         self.start_urls = [url_search_build(query, url_search)]
         self.contador = 0
         self.query = query
         self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
+        self.rango = rango
 
     def parse(self, response):
         if self.selector_forward is not None:
@@ -27,13 +28,16 @@ class GamesPlantetSpider(scrapy.Spider, SpiderSites):
             for item in items:
                 title: str = item.xpath(self.selector_title).get()
                 original_price: float = item.xpath(self.selector_price).get()
-                href: str = "https://us.gamesplanet.com" + item.css(self.selector_href).get()
+                href: str = "https://us.gamesplanet.com" + \
+                    item.css(self.selector_href).get()
                 category: str = item.xpath(self.selector_category).get()
                 if category is None:
                     category = "Presale"
 
-                if self.es_valido_el_resultado(self.query, title.lower()) and original_price is not None:
+                if original_price is not None:
                     price = float(original_price.replace("$", ""))
+
+                if self.es_valido_el_resultado(self.query, title.lower()) and self.esta_en_rango_de_precio(self.rango, price):
                     yield {
                         "title": title,
                         "price": price,
@@ -42,4 +46,4 @@ class GamesPlantetSpider(scrapy.Spider, SpiderSites):
                         "url": href
                     }
             if response.css(self.selector_forward).get():
-                yield response.follow(response.css(self.selector_forward).get(), callback = self.parse)
+                yield response.follow(response.css(self.selector_forward).get(), callback=self.parse)

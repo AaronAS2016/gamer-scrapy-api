@@ -9,28 +9,28 @@ from scrapy import Request
 class GOGSpider(scrapy.Spider, SpiderSites):
     name = "gog"
 
-    def __init__(self, query, modo, url_search, *args, **kwargs):
+    def __init__(self, query, modo, url_search, rango, *args, **kwargs):
         super(GOGSpider, self).__init__(*args, **kwargs)
         self.page = 1
         self.baseurl = url_search_build(query, url_search)
         self.finalurl = self.baseurl.replace("[PAGE]", str(self.page))
         self.start_urls = [self.finalurl]
-        self.contador = 0
         self.query = query
         self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
+        self.rango = rango
 
     def parse(self, response):
         items = json.loads(response.body)["products"]
         if len(items) > 0:
             for item in items:
                 title = item["title"]
-                price = item["price"]["amount"]
+                price = float(item["price"]["amount"])
                 category = item["category"]
                 url = item["url"]
-                if self.es_valido_el_resultado(self.query, title.lower()):
+                if self.es_valido_el_resultado(self.query, title.lower()) and self.esta_en_rango_de_precio(self.rango, price):
                     yield {
                         "title" : title,
-                        "price" : float(price),
+                        "price" : price,
                         "provider": self.name,
                         "category" : category,
                         "url" : "https://www.gog.com" + url,

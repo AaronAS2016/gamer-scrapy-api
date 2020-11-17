@@ -1,5 +1,5 @@
 
-from storescraping.config.constant import BUSQUEDA_EXACTA, BUSQUEDA_QUE_CONTENGA_ALGUNAS_PALABRAS, BUSQUEDA_QUE_CONTENTA_TODAS_PALABRAS
+from storescraping.config.constant import BUSQUEDA_EXACTA, BUSQUEDA_QUE_CONTENGA_ALGUNAS_PALABRAS, BUSQUEDA_QUE_CONTENTA_TODAS_PALABRAS, SIN_PRECIO
 
 class SpiderSites:
 
@@ -22,3 +22,10 @@ class SpiderSites:
     def __modo_todas_palabras(self, query, title):
         palabras = query.split(" ")
         return all(palabra in title for palabra in palabras)
+
+
+    def esta_en_rango_de_precio(self, rango, precio):
+        if precio is None or precio == SIN_PRECIO or precio == "None":
+            return False
+        rango_minimo, rango_maximo = rango
+        return precio <= rango_maximo and precio >= rango_minimo

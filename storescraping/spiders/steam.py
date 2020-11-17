@@ -17,11 +17,11 @@ class SteamSpider(scrapy.Spider, SpiderSites):
     selector_title_header = ".pageheader::text"
     selector_category = "a.app_tag::text"
 
-    def __init__(self, query, modo, url_search, *args, **kwargs):
+    def __init__(self, query, modo, url_search, rango,  *args, **kwargs):
         super(SteamSpider, self).__init__(*args, **kwargs)
         self.start_urls = [url_search_build(query, url_search)]
-        self.contador = 0
         self.query = query
+        self.rango = rango
         self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
 
     def dolarizar_pesos(self, precio_pesos):
@@ -38,23 +38,24 @@ class SteamSpider(scrapy.Spider, SpiderSites):
         if title is None:
             title = response.css(self.selector_title_header).get()
         price = str(response.css(self.selector_price).get())
-        if price == "None": #Si es None puede ser que es un producto con descuento/ o tipo pack , o que no salio a la venta
+        if price == "None":  # Si es None puede ser que es un producto con descuento/ o tipo pack , o que no salio a la venta
             price = str(response.css(self.selector_price_discount).get())
         price = re.sub(r'[\r|\n|\t]', '', price)
 
-        if self.es_valido_el_resultado(self.query, title.lower()) and price != "None": #Si es None significa que es algo que no salio a la venta
-
+        if price != "None":
             if "Free" in price:
                 price = float(0)
-
             elif "ARS" in price:
                 price = float(price.replace("ARS$ ", "").replace(
                     ".", "").replace(",", "."))
                 price = self.dolarizar_pesos(price)
 
+        # Si es None significa que es algo que no salio a la venta
+        if self.es_valido_el_resultado(self.query, title.lower()) and self.esta_en_rango_de_precio(self.rango, price):
+
             yield {
                 "title": title,
-                #"price": round(float(str(price).replace("ARS$ ","").replace(".", "").replace(",", "."))*0.013, 2),
+                # "price": round(float(str(price).replace("ARS$ ","").replace(".", "").replace(",", "."))*0.013, 2),
                 "price": float(price),
                 "provider": self.name,
                 "category": category,

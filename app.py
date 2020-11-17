@@ -1,4 +1,5 @@
 from scrapy.utils.serialize import ScrapyJSONEncoder
+import math
 import json
 from spider_runner import SpiderRunner
 from config.config import SITES_TO_SEARCH
@@ -32,7 +33,7 @@ async def get_quotes(request, modo, orden, query):
     runner = SpiderRunner()
     output_data = []
     filtros = None
-    rango_minimo, rango_maximo = 0, -1
+    rango_minimo, rango_maximo = 0, math.inf
     sitios_a_buscar = SITES_TO_SEARCH
 
     if b"filtro" in request.args:
@@ -41,6 +42,9 @@ async def get_quotes(request, modo, orden, query):
 
     if b"rango" in request.args:
         rango_minimo, rango_maximo = request.args[b"rango"]
+        rango_minimo = int(rango_minimo.decode("utf-8"))
+        rango_maximo = int(rango_maximo.decode("utf-8"))
+        rango_maximo = math.inf if rango_maximo == -1 else rango_maximo
 
     if filtros is not None:
         sitios_a_buscar = [
@@ -68,5 +72,6 @@ async def get_quotes(request, modo, orden, query):
 def return_spider_output(output, output_data, site):
     output_data = output_data + output
     return output_data
+
 
 app.run("localhost", 8080)
