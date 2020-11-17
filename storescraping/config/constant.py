@@ -7,6 +7,7 @@ BUSQUEDA_QUE_CONTENGA_ALGUNAS_PALABRAS = "algunas_palabras"
 ORDEN_POR_NOMBRE = "nombre"
 ORDEN_POR_PAGINA = "pagina"
 ORDEN_POR_PRECIO = "precio"
+SIN_ORDEN = "default"
 
 #Tipos de valores
 SIN_PRECIO = "N/A"

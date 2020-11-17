@@ -15,6 +15,7 @@ class SteamSpider(scrapy.Spider, Validador):
     selector_price_discount = ".discount_final_price::text"
     selector_title = ".//div[@class='apphub_AppName']/text()"
     selector_title_header = ".pageheader::text"
+    selector_category = "a.app_tag::text"
 
     def __init__(self, query, modo, url_search, *args, **kwargs):
         super(SteamSpider, self).__init__(*args, **kwargs)
@@ -31,9 +32,9 @@ class SteamSpider(scrapy.Spider, Validador):
         return round(precio_pesos/valor_oficial, 2)
 
     def parse_product(self, response):
-        categories = response.css("a.app_tag::text").get()
+        categories = response.css().get(self.selector_category)
         category = re.sub(r'[\r|\n|\t]', '', str(
-            categories[0])) if categories is not None else "Sin Categoria"
+            categories[0])) if categories is not None or categories == "" else "Sin Categoria"
         title = response.xpath(self.selector_title).get()
         if title is None:
             title = response.css(self.selector_title_header).get()
@@ -54,6 +55,7 @@ class SteamSpider(scrapy.Spider, Validador):
 
             yield {
                 "title": title,
+                #"price": round(float(str(price).replace("ARS$ ","").replace(".", "").replace(",", "."))*0.013, 2),
                 "price": float(price),
                 "provider": self.name,
                 "category": category,
