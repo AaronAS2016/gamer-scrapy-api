@@ -50,6 +50,8 @@ Ejemplo ```metro%20exodus```
 | `filtro=[proveedor]`* | Elimina el proveedor dado |
 | `filtro=[precio_minimo]&filtro=[precio_maximo]` | toma los titulos con los precios que esten dentro de ese rango |
 
+*para precio maximo sin limite, utilizar -1
+
 *Trabajamos con 4 proveedores: ```gamesplanet```, ```gog```, ```nuuvem``` y ```steampowered```
 
 Ejemplo: ```?filtro=gog&rango=0&rango=20```
