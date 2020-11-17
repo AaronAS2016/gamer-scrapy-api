@@ -1,6 +1,6 @@
 import requests, unittest
 from storescraping.utils.sort import sort_data
-from test_constants import BUSQUEDA_METRO_SIN_ORDENAR, MAYOR_A_MENOR_PRECIO_DE_METRO, MENOR_A_MAYOR_PRECIO_DE_METRO, A_Z_DE_METRO_POR_TITULO, Z_A_DE_METRO_POR_TITULO, A_Z_DE_METRO_POR_PROVEEDOR, Z_A_DE_METRO_POR_PROVEEDOR
+from test_constants import BUSQUEDA_METRO_SIN_ORDENAR, MAYOR_A_MENOR_PRECIO_DE_METRO, MENOR_A_MAYOR_PRECIO_DE_METRO, A_Z_DE_METRO_POR_TITULO, Z_A_DE_METRO_POR_TITULO, METRO_POR_REELEVANCIA
 from storescraping.utils.sort import sort_data
 
 BASE_URL = "http://localhost:8080/search"
@@ -15,28 +15,24 @@ class RequestTest(unittest.TestCase):
 
     #data, sort_type, index
     def test_sort_metro_by_ascending_price(self):
-        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "precio", "asc")
+        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "precio", "asc", "metro")
         self.assertEqual(r, MENOR_A_MAYOR_PRECIO_DE_METRO)
 
     def test_sort_metro_by_A_Z_name(self):
-        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "nombre", "asc")
+        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "nombre", "asc", "metro")
         self.assertEqual(r, A_Z_DE_METRO_POR_TITULO)
 
-    def test_sort_metro_by_A_Z_provider(self):
-        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "pagina", "asc")
-        self.assertEqual(r, A_Z_DE_METRO_POR_PROVEEDOR)
-
     def test_sort_metro_by_descending_price(self):
-        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "precio", "desc")
+        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "precio", "desc", "metro")
         self.assertEqual(r, MAYOR_A_MENOR_PRECIO_DE_METRO)
 
     def test_sort_metro_by_Z_A_name(self):
-        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "nombre", "desc")
+        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "nombre", "desc", "metro")
         self.assertEqual(r, Z_A_DE_METRO_POR_TITULO)
 
-    def test_sort_metro_by_Z_A_provider(self):
-        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "pagina", "desc")
-        self.assertEqual(r, Z_A_DE_METRO_POR_PROVEEDOR)
+    def test_sort_metro_by_relevance(self):
+        r = sort_data(BUSQUEDA_METRO_SIN_ORDENAR, "relevancia", "desc", "metro")
+        self.assertEqual(r, METRO_POR_REELEVANCIA)
 
 if __name__ == "__main__":
     unittest.main()
