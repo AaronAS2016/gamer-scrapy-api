@@ -17,7 +17,7 @@ class SteamSpider(scrapy.Spider, SpiderSites):
     selector_title_header = ".pageheader::text"
     selector_category = "a.app_tag::text"
 
-    def __init__(self, query, modo, url_search, rango,  *args, **kwargs):
+    def __init__(self, query, modo, rango, url_search, *args, **kwargs):
         super(SteamSpider, self).__init__(*args, **kwargs)
         self.start_urls = [url_search_build(query, url_search)]
         self.query = query
@@ -31,9 +31,9 @@ class SteamSpider(scrapy.Spider, SpiderSites):
         return round(precio_pesos/valor_oficial, 2)
 
     def parse_product(self, response):
-        categories = response.css().get(self.selector_category)
+        categories = response.css(self.selector_category).getall()
         category = re.sub(r'[\r|\n|\t]', '', str(
-            categories[0])) if categories is not None or categories == "" else "Sin Categoria"
+            categories[0])) if categories is not None or categories != "" else "Sin Categoria"
         title = response.xpath(self.selector_title).get()
         if title is None:
             title = response.css(self.selector_title_header).get()
@@ -48,9 +48,8 @@ class SteamSpider(scrapy.Spider, SpiderSites):
             elif "ARS" in price:
                 price = float(price.replace("ARS$ ", "").replace(
                     ".", "").replace(",", "."))
-                price = self.dolarizar_pesos(price)
-
-        # Si es None significa que es algo que no salio a la venta
+                price = float(self.dolarizar_pesos(price))
+       # Si es None significa que es algo que no salio a la venta
         if self.es_valido_el_resultado(self.query, title.lower()) and self.esta_en_rango_de_precio(self.rango, price):
 
             yield {
