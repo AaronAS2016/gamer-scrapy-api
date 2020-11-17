@@ -3,11 +3,11 @@ from scrapy import Request
 import json
 
 from storescraping.utils.url_builder import url_search_build
-from storescraping.sites.modes import Validador
+from storescraping.sites.spider_site import SpiderSites
 from storescraping.config.constant import SIN_PRECIO
 
 
-class NuuvemSpider(scrapy.Spider, Validador):
+class NuuvemSpider(scrapy.Spider, SpiderSites):
     name = "nuuvem"
     selector_items = ".product-card--grid"
     selector_price = ".product-price--val::text"
@@ -25,7 +25,7 @@ class NuuvemSpider(scrapy.Spider, Validador):
         self.start_urls = [self.final_url]
         self.contador = 0
         self.query = query
-        self.modo = self.obtener_modo(modo)
+        self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
 
     def start_requests(self):
         for url in self.start_urls:
@@ -47,7 +47,7 @@ class NuuvemSpider(scrapy.Spider, Validador):
 
             link = item.css(self.selector_link).get()
 
-            if self.modo(self.query, title.lower()):
+            if self.es_valido_el_resultado(self.query, title.lower()):
                 price = SIN_PRECIO if price == "No disponible" else price_original
 
                 if price != SIN_PRECIO:

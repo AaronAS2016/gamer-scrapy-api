@@ -1,9 +1,9 @@
 
 from storescraping.config.constant import BUSQUEDA_EXACTA, BUSQUEDA_QUE_CONTENGA_ALGUNAS_PALABRAS, BUSQUEDA_QUE_CONTENTA_TODAS_PALABRAS
 
-class Validador:
+class SpiderSites:
 
-    def obtener_modo(self, modo):
+    def obtener_modo_de_busqueda(self, modo):
         if modo == BUSQUEDA_EXACTA:
             return self.__modo_escricto
         elif modo == BUSQUEDA_QUE_CONTENGA_ALGUNAS_PALABRAS:

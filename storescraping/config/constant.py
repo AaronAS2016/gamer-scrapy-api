@@ -11,3 +11,7 @@ SIN_ORDEN = "default"
 
 #Tipos de valores
 SIN_PRECIO = "N/A"
+
+
+#URL API_DOLARES
+URL_API_DOLARES = "https://www.dolarsi.com/api/api.php?type=valoresprincipales"

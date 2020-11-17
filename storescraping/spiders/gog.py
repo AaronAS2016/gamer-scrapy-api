@@ -2,11 +2,11 @@ import scrapy
 import json
 
 from storescraping.utils.url_builder import url_search_build
-from storescraping.sites.modes import Validador
+from storescraping.sites.spider_site import SpiderSites
 from scrapy import Request
 
 
-class GOGSpider(scrapy.Spider, Validador):
+class GOGSpider(scrapy.Spider, SpiderSites):
     name = "gog"
 
     def __init__(self, query, modo, url_search, *args, **kwargs):
@@ -17,7 +17,7 @@ class GOGSpider(scrapy.Spider, Validador):
         self.start_urls = [self.finalurl]
         self.contador = 0
         self.query = query
-        self.modo = self.obtener_modo(modo)
+        self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
 
     def parse(self, response):
         items = json.loads(response.body)["products"]
@@ -27,7 +27,7 @@ class GOGSpider(scrapy.Spider, Validador):
                 price = item["price"]["amount"]
                 category = item["category"]
                 url = item["url"]
-                if self.modo(self.query, title.lower()):
+                if self.es_valido_el_resultado(self.query, title.lower()):
                     yield {
                         "title" : title,
                         "price" : float(price),

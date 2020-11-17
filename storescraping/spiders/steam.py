@@ -3,11 +3,11 @@ import re
 import requests
 from scrapy import FormRequest, Request
 from storescraping.utils.url_builder import url_search_build
-from storescraping.sites.modes import Validador
-from storescraping.config.constant import SIN_PRECIO
+from storescraping.sites.spider_site import SpiderSites
+from storescraping.config.constant import SIN_PRECIO, URL_API_DOLARES
 
 
-class SteamSpider(scrapy.Spider, Validador):
+class SteamSpider(scrapy.Spider, SpiderSites):
     name = "steam"
 
     selector_items = "//div[@id='search_resultsRows']/a"
@@ -22,11 +22,10 @@ class SteamSpider(scrapy.Spider, Validador):
         self.start_urls = [url_search_build(query, url_search)]
         self.contador = 0
         self.query = query
-        self.modo = self.obtener_modo(modo)
+        self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
 
     def dolarizar_pesos(self, precio_pesos):
-        requester = requests.get(
-            "https://www.dolarsi.com/api/api.php?type=valoresprincipales")
+        requester = requests.get(URL_API_DOLARES)
         data = requester.json()
         valor_oficial = float(data[0]['casa']['venta'].replace(",", "."))
         return round(precio_pesos/valor_oficial, 2)
@@ -43,7 +42,7 @@ class SteamSpider(scrapy.Spider, Validador):
             price = str(response.css(self.selector_price_discount).get())
         price = re.sub(r'[\r|\n|\t]', '', price)
 
-        if self.modo(self.query, title.lower()) and price != "None": #Si es None significa que es algo que no salio a la venta
+        if self.es_valido_el_resultado(self.query, title.lower()) and price != "None": #Si es None significa que es algo que no salio a la venta
 
             if "Free" in price:
                 price = float(0)

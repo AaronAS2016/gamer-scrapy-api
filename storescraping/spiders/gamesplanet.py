@@ -1,10 +1,10 @@
 import scrapy
 
 from storescraping.utils.url_builder import url_search_build
-from storescraping.sites.modes import Validador
+from storescraping.sites.spider_site import SpiderSites
 
 
-class GamesPlantetSpider(scrapy.Spider, Validador):
+class GamesPlantetSpider(scrapy.Spider, SpiderSites):
     name = "gamesplanet"
 
     selector_items = "//div[@class='row no-gutters game_list game_list_small pt-2']"
@@ -19,7 +19,7 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
         self.start_urls = [url_search_build(query, url_search)]
         self.contador = 0
         self.query = query
-        self.modo = self.obtener_modo(modo)
+        self.es_valido_el_resultado = self.obtener_modo_de_busqueda(modo)
 
     def parse(self, response):
         if self.selector_forward is not None:
@@ -32,7 +32,7 @@ class GamesPlantetSpider(scrapy.Spider, Validador):
                 if category is None:
                     category = "Presale"
 
-                if self.modo(self.query, title.lower()) and original_price is not None:
+                if self.es_valido_el_resultado(self.query, title.lower()) and original_price is not None:
                     price = float(original_price.replace("$", ""))
                     yield {
                         "title": title,

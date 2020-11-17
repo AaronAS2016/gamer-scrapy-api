@@ -26,6 +26,6 @@ def sort_by_relevance(data, query):
 
         sorted_por_peso.append((peso, resultado))
 
-    sorted_por_peso = sorted(sorted_por_peso, key= lambda x: x[0], reverse=True)
+    sorted_por_peso = sorted(sorted_por_peso, key=lambda x: x[0], reverse=True)
 
     return [resultado for peso, resultado in sorted_por_peso]
