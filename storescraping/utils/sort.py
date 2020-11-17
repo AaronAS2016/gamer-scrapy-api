@@ -19,9 +19,12 @@ def sort_by_relevance(data, query):
 
     for peso, resultado in array_busqueda:
         titulo = resultado["title"].lower()
-        if titulo.startswith(query.lower()):
+        primer_palabra = titulo.split(" ")[0]
+        if primer_palabra == "metro":
+            peso +=3
+        if primer_palabra.startswith(query.lower()):
             peso += 2
-        if titulo.lower() in query.lower():
+        if query.lower() in titulo: 
             peso += 1
 
         sorted_por_peso.append((peso, resultado))

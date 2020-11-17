@@ -47,12 +47,12 @@ class NuuvemSpider(scrapy.Spider, SpiderSites):
 
             link = item.css(self.selector_link).get()
 
-            price = SIN_PRECIO if price == "No disponible" else price_original
+            price = SIN_PRECIO if price == "No disponible" else float(price_original)
 
             if self.es_valido_el_resultado(self.query, title.lower()) and self.esta_en_rango_de_precio(self.rango, price):
                     yield {
                         "title": title,
-                        "price": float(price),
+                        "price": price,
                         "provider": self.name,
                         "category": category,
                         "url": link
